@@ -61,9 +61,12 @@ process.options = cms.untracked.PSet()
 process.options.wantSummary = cms.untracked.bool(False)
 process.options.allowUnscheduled = cms.untracked.bool(True)
 #process.options.numberOfThreads = cms.untracked.uint32(options.numberOfThreads)
+#process.options = cms.untracked.PSet(
+#  SkipEvent = cms.untracked.vstring('ProductNotFound')
+#                                  )
 
 process.load('FWCore.MessageLogger.MessageLogger_cfi')
-process.MessageLogger.cerr.FwkReport.reportEvery = 100
+process.MessageLogger.cerr.FwkReport.reportEvery = 1
 
 process.load('Configuration.StandardSequences.MagneticField_cff')
 process.load('Configuration.Geometry.GeometryRecoDB_cff')
@@ -117,13 +120,13 @@ else:
    MetInputTag = cms.InputTag('slimmedMETs')
 
 ### MET filters
-process.load('RecoMET.METFilters.BadPFMuonFilter_cfi')
-process.BadPFMuonFilter.muons = cms.InputTag("slimmedMuons")
-process.BadPFMuonFilter.PFCandidates = cms.InputTag("packedPFCandidates")
+#process.load('RecoMET.METFilters.BadPFMuonFilter_cfi')
+#process.BadPFMuonFilter.muons = cms.InputTag("slimmedMuons")
+#process.BadPFMuonFilter.PFCandidates = cms.InputTag("packedPFCandidates")
 
-process.load('RecoMET.METFilters.BadChargedCandidateFilter_cfi')
-process.BadChargedCandidateFilter.muons = cms.InputTag("slimmedMuons")
-process.BadChargedCandidateFilter.PFCandidates = cms.InputTag("packedPFCandidates")
+#process.load('RecoMET.METFilters.BadChargedCandidateFilter_cfi')
+#process.BadChargedCandidateFilter.muons = cms.InputTag("slimmedMuons")
+#process.BadChargedCandidateFilter.PFCandidates = cms.InputTag("packedPFCandidates")
 
 ## Load module for Electron MVA ID
 ## It will append a value maps the miniAOD, that it's accesible throught a well Handle
@@ -131,20 +134,20 @@ process.BadChargedCandidateFilter.PFCandidates = cms.InputTag("packedPFCandidate
 ##  https://github.com/ikrav/EgammaWork/blob/ntupler_and_VID_demos_7.4.12/ElectronNtupler/plugins/ElectronNtuplerVIDwithMVADemo.cc#L99
 ## process.load('RecoEgamma.ElectronIdentification.ElectronMVAValueMapProducer_cfi')
 ##-------------
-from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
+#from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
 # turn on VID producer, indicate data format  to be
 # DataFormat.AOD or DataFormat.MiniAOD, as appropriate
-switchOnVIDElectronIdProducer(process, DataFormat.MiniAOD) ##also compute a maps with the electrons that pass an MVA cut
-switchOnVIDElectronIdProducer(process, DataFormat.AOD)
+#switchOnVIDElectronIdProducer(process, DataFormat.MiniAOD) ##also compute a maps with the electrons that pass an MVA cut
+#switchOnVIDElectronIdProducer(process, DataFormat.AOD)
 
 # define which IDs we want to produce
-id_modules = [ 'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Spring15_25ns_V1_cff',
-               'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Spring15_25ns_Trig_V1_cff',
-               'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Spring15_25ns_nonTrig_V1_cff' ]
+#id_modules = [ 'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Spring15_25ns_V1_cff',
+#               'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Spring15_25ns_Trig_V1_cff',
+#               'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Spring15_25ns_nonTrig_V1_cff' ]
 
 #add them to the VID producer
-for idmod in id_modules:
-    setupAllVIDIdsInModule(process,idmod,setupVIDElectronSelection)
+#for idmod in id_modules:
+#   setupAllVIDIdsInModule(process,idmod,setupVIDElectronSelection)
 #------------
 
 ### Top gen level info
@@ -192,9 +195,9 @@ for channel in channels:
     ))
     setattr(process, producerName, cms.EDAnalyzer(producerClassName,
         electronSrc             = cms.InputTag('slimmedElectrons'),
-        eleTightIdMap           = cms.InputTag('egmGsfElectronIDs:mvaEleID-Spring15-25ns-nonTrig-V1-wp80'),
-        eleMediumIdMap          = cms.InputTag('egmGsfElectronIDs:mvaEleID-Spring15-25ns-nonTrig-V1-wp90'),
-        eleCutBasedVeto         = cms.InputTag('egmGsfElectronIDs:cutBasedElectronID-Spring15-25ns-V1-standalone-veto'),
+                                                  #eleTightIdMap           = cms.InputTag('egmGsfElectronIDs:mvaEleID-Spring15-25ns-nonTrig-V1-wp80'),
+                                                  #eleMediumIdMap          = cms.InputTag('egmGsfElectronIDs:mvaEleID-Spring15-25ns-nonTrig-V1-wp90'),
+                                                  #eleCutBasedVeto         = cms.InputTag('egmGsfElectronIDs:cutBasedElectronID-Spring15-25ns-V1-standalone-veto'),
         tauSrc                  = cms.InputTag('slimmedTaus'),
         muonSrc                 = cms.InputTag('slimmedMuons'),
         vtxSrc                  = cms.InputTag('offlineSlimmedPrimaryVertices'),
@@ -203,15 +206,15 @@ for channel in channels:
         PUInfo                  = cms.InputTag('slimmedAddPileupInfo'),
         pfMETSrc                = MetInputTag,
         prescales               = cms.InputTag('patTrigger'),
-        objects                 = cms.InputTag('selectedPatTrigger'),
-        badPFMuonFilter         = cms.InputTag('BadPFMuonFilter'),
-        badChCandidateFilter    = cms.InputTag('BadChargedCandidateFilter'),
+        objects                 = cms.InputTag('selectedPatTriggerCustom'),
+                                                  #badPFMuonFilter         = cms.InputTag('BadPFMuonFilter'),
+                                                  #badChCandidateFilter    = cms.InputTag('BadChargedCandidateFilter'),
         lheEventProducts        = cms.InputTag('externalLHEProducer'),
         genEventInfoProduct     = cms.InputTag('generator'),
         topGenEvent             = cms.InputTag('genEvt'),
         genParticles            = cms.InputTag('prunedGenParticles'),
         genJets                 = cms.InputTag('slimmedGenJets'),
-        l1JetParticleProduct    = cms.InputTag('l1extraParticles', 'IsoTau'),
+                                                  #l1JetParticleProduct    = cms.InputTag('l1tTauBXVector', 'Tau'),
         isMC                    = cms.bool(not isData),
         applyTriggerMatch       = cms.bool(options.applyTriggerMatch),
         hltPaths                = hltPaths,
@@ -228,12 +231,12 @@ for channel in channels:
     process.tupleProductionSequence += getattr(process, producerName)
 
 process.p = cms.Path(
-    process.egmGsfElectronIDSequence *
-    process.electronMVAValueMapProducer *
+                     #process.egmGsfElectronIDSequence *
+                     #process.electronMVAValueMapProducer *
     process.JECsequence *
-    process.fullPatMetSequence *
-    process.BadPFMuonFilter *
-    process.BadChargedCandidateFilter *
+                     #process.fullPatMetSequence *
+                     #process.BadPFMuonFilter *
+                     #process.BadChargedCandidateFilter *
     process.topGenSequence *
     process.tupleProductionSequence
 )

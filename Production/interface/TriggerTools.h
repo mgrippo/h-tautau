@@ -16,15 +16,18 @@ This file is part of https://github.com/hh-italian-group/h-tautau. */
 #include "DataFormats/PatCandidates/interface/Muon.h"
 #include "DataFormats/PatCandidates/interface/Tau.h"
 #include "h-tautau/Analysis/include/TriggerResults.h"
+#include "DataFormats/L1Trigger/interface/BXVector.h"
+#include "DataFormats/L1Trigger/interface/Tau.h"
 
 namespace analysis {
 
-enum class CMSSW_Process { SIM, HLT, RECO, PAT };
+enum class CMSSW_Process { SIM, HLT, RECO, PAT, TEST };
 ENUM_NAMES(CMSSW_Process) = {
     { CMSSW_Process::SIM, "SIM" },
     { CMSSW_Process::HLT, "HLT" },
     { CMSSW_Process::RECO, "RECO" },
-    { CMSSW_Process::PAT, "PAT" }
+    { CMSSW_Process::PAT, "PAT" },
+    { CMSSW_Process::TEST, "TEST" }
 };
 
 namespace detail {
@@ -56,7 +59,8 @@ inline const std::set<trigger::TriggerObjectType>& GetTriggerObjectTypes<pat::Ta
 
 class TriggerTools {
 public:
-    using L1ParticlePtrSet = std::set<const l1extra::L1JetParticle*>;
+    //using L1ParticlePtrSet = std::set<const l1extra::L1JetParticle*>;
+    using L1ParticlePtrSet = std::set<const l1t::Tau*>;
     template<typename T> using EDGetTokenT = edm::EDGetTokenT<T>;
     template<typename T> using Handle = edm::Handle<T>;
     using TriggerObjectSet = std::set<const pat::TriggerObjectStandAlone*>;
@@ -67,11 +71,15 @@ public:
                  EDGetTokenT<edm::TriggerResults>&& _triggerResultsPAT_token,
                  EDGetTokenT<pat::PackedTriggerPrescales>&& _triggerPrescales_token,
                  EDGetTokenT<pat::TriggerObjectStandAloneCollection>&& _triggerObjects_token,
-                 EDGetTokenT<std::vector<l1extra::L1JetParticle>>&& _l1JetParticles_token);
+//                 EDGetTokenT<std::vector<l1extra::L1JetParticle>>&& _l1JetParticles_token);
+                 EDGetTokenT<BXVector<l1t::Tau>>&& _l1JetParticles_token);
 
     TriggerTools(const edm::ParameterSet& iConfig);
 
     void Initialize(const edm::Event& iEvent);
+    
+    template<typename HiggsCandidate>
+    std::set<l1t::Tau> PrintL1Particles(const HiggsCandidate& candidate);
 
     void SetTriggerAcceptBits(const analysis::TriggerDescriptors& descriptors, analysis::TriggerResults& results);
 
@@ -91,6 +99,7 @@ public:
     void SetTriggerMatchBits(const analysis::TriggerDescriptors& descriptors, analysis::TriggerResults& results,
                              const HiggsCandidate& candidate, double deltaR_Limit, bool can_flip = false)
     {
+        std::cout << "descriptors size: " <<  descriptors.size() << std::endl;
         for(size_t n = 0; n < descriptors.size(); ++n) {
             const size_t n_legs = descriptors.GetNumberOfLegs(n);
             if(n_legs > 2 || n_legs == 0)
@@ -102,16 +111,20 @@ public:
                 const size_t first = (flip % 2) + 1, second = ((flip + 1) % 2) + 1;
                 matches[first] = FindMatchingTriggerObjects(descriptors, n, candidate.GetFirstDaughter(), first,
                                                             deltaR_Limit);
+                std::cout << "Found first trigger match " <<  std::endl;
                 matches[second] = FindMatchingTriggerObjects(descriptors, n, candidate.GetSecondDaughter(), second,
                                                              deltaR_Limit);
 
+                std::cout << "Found second trigger match " <<  std::endl;
                 std::vector<const pat::TriggerObjectStandAlone*> comb_match;
                 std::set_union(matches[1].begin(), matches[1].end(), matches[2].begin(), matches[2].end(),
                                std::back_inserter(comb_match));
 
                 match_found = matches[1].size() >= 1 && matches[2].size() >= n_legs - 1 && comb_match.size() >= n_legs;
+                std::cout << "Found match " <<  std::endl;
             }
             results.SetMatch(n, match_found);
+            std::cout << "Set results " <<  std::endl;
         }
     }
 
@@ -124,13 +137,15 @@ private:
     std::map<CMSSW_Process, EDGetTokenT<edm::TriggerResults>> triggerResults_tokens;
     EDGetTokenT<pat::PackedTriggerPrescales> triggerPrescales_token;
     EDGetTokenT<pat::TriggerObjectStandAloneCollection> triggerObjects_token;
-    EDGetTokenT<std::vector<l1extra::L1JetParticle>> l1JetParticles_token;
+//    EDGetTokenT<std::vector<l1extra::L1JetParticle>> l1JetParticles_token;
+    EDGetTokenT<BXVector<l1t::Tau>> l1JetParticles_token;
 
     const edm::Event* iEvent;
     std::map<CMSSW_Process, Handle<edm::TriggerResults>> triggerResultsMap;
     edm::Handle<pat::PackedTriggerPrescales> triggerPrescales;
     edm::Handle<pat::TriggerObjectStandAloneCollection> triggerObjects;
-    edm::Handle<std::vector<l1extra::L1JetParticle>> l1JetParticles;
+//    edm::Handle<std::vector<l1extra::L1JetParticle>> l1JetParticles;
+    edm::Handle<BXVector<l1t::Tau>> l1JetParticles;
 };
 
 } // namespace analysis

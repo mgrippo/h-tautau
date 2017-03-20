@@ -4,6 +4,7 @@ This file is part of https://github.com/hh-italian-group/h-tautau. */
 #include "../interface/TriggerTools.h"
 #include "FWCore/Framework/interface/EventSetup.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
+#include "DataFormats/L1Trigger/interface/BXVector.h"
 #include "AnalysisTools/Core/include/RootExt.h"
 
 namespace analysis {
@@ -14,12 +15,13 @@ TriggerTools::TriggerTools(EDGetTokenT<edm::TriggerResults>&& _triggerResultsSIM
                            EDGetTokenT<edm::TriggerResults>&& _triggerResultsPAT_token,
                            EDGetTokenT<pat::PackedTriggerPrescales>&& _triggerPrescales_token,
                            EDGetTokenT<pat::TriggerObjectStandAloneCollection>&& _triggerObjects_token,
-                           EDGetTokenT<std::vector<l1extra::L1JetParticle>>&& _l1JetParticles_token) :
+//                           EDGetTokenT<std::vector<l1extra::L1JetParticle>>&& _l1JetParticles_token) :
+                           EDGetTokenT<BXVector<l1t::Tau>>&& _l1JetParticles_token) :
     triggerPrescales_token(_triggerPrescales_token), triggerObjects_token(_triggerObjects_token),
     l1JetParticles_token(_l1JetParticles_token)
 {
     triggerResults_tokens[CMSSW_Process::SIM] = _triggerResultsSIM_token;
-    triggerResults_tokens[CMSSW_Process::HLT] = _triggerResultsHLT_token;
+    triggerResults_tokens[CMSSW_Process::TEST] = _triggerResultsHLT_token;
     triggerResults_tokens[CMSSW_Process::RECO] = _triggerResultsRECO_token;
     triggerResults_tokens[CMSSW_Process::PAT] = _triggerResultsPAT_token;
 }
@@ -32,12 +34,38 @@ void TriggerTools::Initialize(const edm::Event &_iEvent)
     iEvent->getByToken(triggerPrescales_token, triggerPrescales);
     iEvent->getByToken(triggerObjects_token, triggerObjects);
     iEvent->getByToken(l1JetParticles_token, l1JetParticles);
+    
+}
+    
+template<typename HiggsCandidate>
+std::set<l1t::Tau> TriggerTools::PrintL1Particles(const HiggsCandidate& candidate)
+{
+    std::set<l1t::Tau> matches;
+    const BXVector<l1t::Tau>& l1taus = *l1JetParticles.product();
+    const LorentzVector& firstCandidateMomentum = candidate.GetFirstDaughter();
+    const LorentzVector& secondCandidateMomentum = candidate.GetSecondDaughter();
+    std::vector<LorentzVector>& candidateMomentums;
+    candidateMomentums.push_back(firstCandidateMomentum);
+    candidateMomentums.push_back(secondCandidateMomentum);
+    std::cout << " l1JetParticle size: " << l1taus.size(0) << std::endl;
+    for (unsigned n = 0; n < l1taus.size(0); ++n){
+        //std::cout << "n" << n << " - l1JetParticle elem: " << l1taus.at(0,n) << std::endl;
+        const l1t::Tau& l1tau = l1taus.at(0,n);
+        std::cout << "n" << n << " - l1tau pt: " << l1tau.pt() << std::endl;
+        for (const auto& candidateMomentum : candidateMomentums){
+            const double deltaR2 = std::pow(0.5, 2);
+            if(ROOT::Math::VectorUtil::DeltaR2(l1tau.p4(), candidateMomentum) >= deltaR2) continue;
+            matches.insert(l1tau);
+            break;
+        }
+    }
+    return matches;
 }
 
 void TriggerTools::SetTriggerAcceptBits(const analysis::TriggerDescriptors& descriptors,
                                         analysis::TriggerResults& results)
 {
-    const auto& triggerResultsHLT = triggerResultsMap.at(CMSSW_Process::HLT);
+    const auto& triggerResultsHLT = triggerResultsMap.at(CMSSW_Process::TEST);
     const edm::TriggerNames& triggerNames = iEvent->triggerNames(*triggerResultsHLT);
 
     for (size_t i = 0; i < triggerResultsHLT->size(); ++i) {
@@ -67,16 +95,25 @@ TriggerTools::TriggerObjectSet TriggerTools::FindMatchingTriggerObjects(
     };
 
     TriggerObjectSet matches;
-    const auto& triggerResultsHLT = triggerResultsMap.at(CMSSW_Process::HLT);
+    const auto& triggerResultsHLT = triggerResultsMap.at(CMSSW_Process::TEST);
+    //std::cout << "Got triggerResultsHLT: " << triggerResultsHLT <<  std::endl;
     const double deltaR2 = std::pow(deltaR_Limit, 2);
     const edm::TriggerNames& triggerNames = iEvent->triggerNames(*triggerResultsHLT);
+    //std::cout << "Got triggerNames" << std::endl;
     for (const pat::TriggerObjectStandAlone& triggerObject : *triggerObjects) {
+        //std::cout << "hasExpectedType: " << hasExpectedType(triggerObject) << std::endl;
         if(!hasExpectedType(triggerObject)) continue;
+        //std::cout << "DR: " << ROOT::Math::VectorUtil::DeltaR2(triggerObject.polarP4(), candidateMomentum) << std::endl;
         if(ROOT::Math::VectorUtil::DeltaR2(triggerObject.polarP4(), candidateMomentum) >= deltaR2) continue;
         pat::TriggerObjectStandAlone unpackedTriggerObject(triggerObject);
+        //std::cout << "energy trg obj: " << unpackedTriggerObject.energy() << std::endl;
+        //std::cout << "triggerNames size: " << triggerNames.size()<< std::endl;
+        //std::cout << "descriptor size: " << descriptors.GetPatterns().size()<< std::endl;
         unpackedTriggerObject.unpackPathNames(triggerNames);
+        //std::cout << "passFilters: " << passFilters(unpackedTriggerObject) << std::endl;
         if(!passFilters(unpackedTriggerObject)) continue;
         const auto& paths = unpackedTriggerObject.pathNames(true, true);
+        //std::cout << "Paths: " << paths.size() << std::endl;
         for(const auto& path : paths) {
             if(descriptors.PatternMatch(path, path_index)) {
                 matches.insert(&triggerObject);

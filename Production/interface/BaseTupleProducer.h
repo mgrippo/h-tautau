@@ -41,6 +41,9 @@ This file is part of https://github.com/hh-italian-group/h-tautau. */
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
 
+#include "DataFormats/L1Trigger/interface/BXVector.h"
+#include "DataFormats/L1Trigger/interface/Tau.h"
+
 // import LHEEventProduction definition
 #include "SimDataFormats/GeneratorProducts/interface/LHEEventProduct.h"
 #include "SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h"
@@ -126,7 +129,7 @@ private:
     edm::EDGetTokenT<TtGenEvent> topGenEvent_token;
     edm::EDGetTokenT<std::vector<reco::GenParticle>> genParticles_token;
     edm::EDGetTokenT<edm::View<reco::GenJet>> genJets_token;
-    edm::EDGetTokenT<bool> badPFMuonFilter_token, badChCandidateFilter_token;
+//edm::EDGetTokenT<bool> badPFMuonFilter_token, badChCandidateFilter_token;
 
 protected:
     const ProductionMode productionMode;
