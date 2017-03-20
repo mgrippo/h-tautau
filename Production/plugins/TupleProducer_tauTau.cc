@@ -39,7 +39,9 @@ void TupleProducer_tauTau::ProcessEvent(Cutter& cut)
     if(applyTriggerMatch){
         triggerTools.SetTriggerMatchBits(triggerDescriptors, selection.triggerResults, selected_higgs,
                                          cuts::H_tautau_2016::DeltaR_triggerMatch, true);
-        std::set<l1t::Tau> L1tauMatches = triggerTools.PrintL1Particles(selected_higgs);
+        
+        
+        const auto L1tauMatches = triggerTools.PrintL1Particles(selected_higgs);
         std::cout << " l1tau matches size: " << L1tauMatches.size() << std::endl;
     }
     

@@ -79,7 +79,27 @@ public:
     void Initialize(const edm::Event& iEvent);
     
     template<typename HiggsCandidate>
-    std::set<l1t::Tau> PrintL1Particles(const HiggsCandidate& candidate);
+    std::set<const l1t::Tau*> PrintL1Particles(const HiggsCandidate& candidate)
+    {
+        std::set<const l1t::Tau*> matches;
+        const BXVector<l1t::Tau>& l1taus = *l1JetParticles.product();
+       
+        const auto& candidateMomentums = candidate.GetDaughterMomentums();
+        
+        std::cout << " l1JetParticle size: " << l1taus.size(0) << std::endl;
+        for (unsigned n = 0; n < l1taus.size(0); ++n){
+            //std::cout << "n" << n << " - l1JetParticle elem: " << l1taus.at(0,n) << std::endl;
+            const l1t::Tau& l1tau = l1taus.at(0,n);
+            std::cout << "n" << n << " - l1tau pt: " << l1tau.pt() << std::endl;
+            for (const auto& candidateMomentum : candidateMomentums){
+                const double deltaR2 = std::pow(0.5, 2);
+                if(ROOT::Math::VectorUtil::DeltaR2(l1tau.p4(), candidateMomentum) >= deltaR2) continue;
+                matches.insert(&l1tau);
+                break;
+            }
+        }
+        return matches;
+    }
 
     void SetTriggerAcceptBits(const analysis::TriggerDescriptors& descriptors, analysis::TriggerResults& results);
 
@@ -124,6 +144,7 @@ public:
                 std::cout << "Found match " <<  std::endl;
             }
             results.SetMatch(n, match_found);
+            
             std::cout << "Set results " <<  std::endl;
         }
     }
