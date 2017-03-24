@@ -61,6 +61,7 @@ class TriggerTools {
 public:
     //using L1ParticlePtrSet = std::set<const l1extra::L1JetParticle*>;
     using L1ParticlePtrSet = std::set<const l1t::Tau*>;
+    using L1ParticlePtrSetVector = std::vector<std::set<const l1t::Tau*>>;
     template<typename T> using EDGetTokenT = edm::EDGetTokenT<T>;
     template<typename T> using Handle = edm::Handle<T>;
     using TriggerObjectSet = std::set<const pat::TriggerObjectStandAlone*>;
@@ -79,26 +80,32 @@ public:
     void Initialize(const edm::Event& iEvent);
     
     template<typename HiggsCandidate>
-    std::set<const l1t::Tau*> PrintL1Particles(const HiggsCandidate& candidate)
+    L1ParticlePtrSetVector MatchL1Particles(const HiggsCandidate& candidate, analysis::TriggerResults& results)
     {
-        std::set<const l1t::Tau*> matches;
         const BXVector<l1t::Tau>& l1taus = *l1JetParticles.product();
-       
-        const auto& candidateMomentums = candidate.GetDaughterMomentums();
+        L1ParticlePtrSetVector vector_matches;
+        L1ParticlePtrSet matches_1, matches_2;
+        const auto& firstCandidateMomentum = candidate.GetFirstDaughter().GetMomentum();
+        const auto& secondCandidateMomentum = candidate.GetSecondDaughter().GetMomentum();
+        const double deltaR2 = std::pow(0.5, 2);
         
         std::cout << " l1JetParticle size: " << l1taus.size(0) << std::endl;
         for (unsigned n = 0; n < l1taus.size(0); ++n){
             //std::cout << "n" << n << " - l1JetParticle elem: " << l1taus.at(0,n) << std::endl;
             const l1t::Tau& l1tau = l1taus.at(0,n);
             std::cout << "n" << n << " - l1tau pt: " << l1tau.pt() << std::endl;
-            for (const auto& candidateMomentum : candidateMomentums){
-                const double deltaR2 = std::pow(0.5, 2);
-                if(ROOT::Math::VectorUtil::DeltaR2(l1tau.p4(), candidateMomentum) >= deltaR2) continue;
-                matches.insert(&l1tau);
-                break;
-            }
+            
+            if(ROOT::Math::VectorUtil::DeltaR2(l1tau.p4(), firstCandidateMomentum) < deltaR2)
+                matches_1.insert(&l1tau);
+            else if(ROOT::Math::VectorUtil::DeltaR2(l1tau.p4(), secondCandidateMomentum) < deltaR2)
+                matches_2.insert(&l1tau);
+            else
+                continue;
         }
-        return matches;
+        vector_matches.push_back(matches_1);
+        vector_matches.push_back(matches_2);
+        results.SetL1Matches(vector_matches);
+        return vector_matches;
     }
 
     void SetTriggerAcceptBits(const analysis::TriggerDescriptors& descriptors, analysis::TriggerResults& results);
@@ -126,8 +133,9 @@ public:
                 throw exception("Unsupported number of legs = %1%.") % n_legs;
             bool match_found = false;
             const size_t max_flip = can_flip ? 2 : 1;
+            std::map<size_t, TriggerObjectSet> matches;
             for(size_t flip = 0; !match_found && flip < max_flip; ++flip) {
-                std::map<size_t, TriggerObjectSet> matches;
+                matches.clear();
                 const size_t first = (flip % 2) + 1, second = ((flip + 1) % 2) + 1;
                 matches[first] = FindMatchingTriggerObjects(descriptors, n, candidate.GetFirstDaughter(), first,
                                                             deltaR_Limit);
@@ -144,10 +152,12 @@ public:
                 std::cout << "Found match " <<  std::endl;
             }
             results.SetMatch(n, match_found);
+            results.SetTriggerMatchObject(n, matches);
             
             std::cout << "Set results " <<  std::endl;
         }
     }
+    
 
     bool TryGetTriggerResult(CMSSW_Process process, const std::string& name, bool& result) const;
     bool GetTriggerResult(CMSSW_Process process, const std::string& name) const;

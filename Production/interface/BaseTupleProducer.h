@@ -43,6 +43,7 @@ This file is part of https://github.com/hh-italian-group/h-tautau. */
 
 #include "DataFormats/L1Trigger/interface/BXVector.h"
 #include "DataFormats/L1Trigger/interface/Tau.h"
+#include "DataFormats/L1Trigger/interface/L1Candidate.h"
 
 // import LHEEventProduction definition
 #include "SimDataFormats/GeneratorProducts/interface/LHEEventProduct.h"

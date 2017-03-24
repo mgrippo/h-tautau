@@ -6,6 +6,9 @@ This file is part of https://github.com/hh-italian-group/h-tautau. */
 #include <bitset>
 #include <boost/regex.hpp>
 #include "AnalysisTools/Core/include/exception.h"
+#include "DataFormats/PatCandidates/interface/TriggerObjectStandAlone.h"
+#include "DataFormats/L1Trigger/interface/BXVector.h"
+#include "DataFormats/L1Trigger/interface/Tau.h"
 
 namespace analysis {
 
@@ -94,9 +97,14 @@ public:
     using Bits = std::bitset<MaxNumberOfTriggers>;
     using DescriptorsPtr = std::shared_ptr<const TriggerDescriptors>;
     using Pattern = TriggerDescriptors::Pattern;
+    using TriggerObjectSet = std::set<const pat::TriggerObjectStandAlone*>;
+    using TriggerObjectSetMap = std::map<size_t, TriggerObjectSet>;
+    using L1ParticlePtrSetVector = std::vector<std::set<const l1t::Tau*>>;
 
     BitsContainer GetAcceptBits() const { return accept_bits.to_ullong(); }
     BitsContainer GetMatchBits() const { return match_bits.to_ullong(); }
+    std::map<size_t, TriggerObjectSetMap> GetTriggerMatchObjects() const {return triggerObjectSetMap;}
+    L1ParticlePtrSetVector GetL1TriggerMatchObjects() const {return vector_l1_matches;}
 
     void SetAcceptBits(BitsContainer _accept_bits) { accept_bits = Bits(_accept_bits); }
     void SetMatchBits(BitsContainer _match_bits) { match_bits = Bits(_match_bits); }
@@ -107,6 +115,8 @@ public:
     bool AcceptAndMatch(size_t index) const { CheckIndex(index); return accept_bits[index] && match_bits[index]; }
     void SetAccept(size_t index, bool value) { CheckIndex(index); accept_bits[index] = value; }
     void SetMatch(size_t index, bool value) { CheckIndex(index); match_bits[index] = value; }
+    void SetTriggerMatchObject(size_t index, TriggerObjectSetMap _triggerObjectSetMap) {CheckIndex(index);triggerObjectSetMap[index] = _triggerObjectSetMap;}
+    void SetL1Matches(L1ParticlePtrSetVector _vector_l1_matches) {vector_l1_matches = _vector_l1_matches;}
 
     bool Accept(const Pattern& pattern) const { return Accept(GetIndex(pattern)); }
     bool Match(const Pattern& pattern) const { return Match(GetIndex(pattern)); }
@@ -140,6 +150,8 @@ private:
 private:
     Bits accept_bits, match_bits;
     DescriptorsPtr triggerDescriptors;
+    std::map<size_t, TriggerObjectSetMap> triggerObjectSetMap;
+    L1ParticlePtrSetVector vector_l1_matches;
 };
 
 } // namespace nutple

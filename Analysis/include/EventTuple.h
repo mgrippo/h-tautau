@@ -138,6 +138,13 @@ using MetCovMatrix = analysis::SquareMatrix<2>;
 	VAR(Float_t, mT1) /*transverse mass of the leton*/ \
 	VAR(Float_t, mT2) /*transverse mass of the tau*/ \
 	VAR(Float_t, m_bb) \
+    /* Trigger match Variables */ \
+    VAR(std::vector<LorentzVectorE>, l1_match_p4_1) /* p4 of 1st L1 tau object matched */\
+    VAR(std::vector<LorentzVectorE>, l1_match_p4_2) /* p4 of 2nd L1 tau object matched */\
+    VAR(std::vector<Float_t>, l1_hwIso_1) /* iso of 1st L1 tau object matched */\
+    VAR(std::vector<Float_t>, l1_hwIso_2) /* iso of 2nd L1 tau object matched */\
+    VAR(std::vector<LorentzVectorE>, hlt_match_p4_1) /* p4 of 1st HLT tau object matched */\
+    VAR(std::vector<LorentzVectorE>, hlt_match_p4_2) /* p4 of 2nd HLT tau object matched */\
     /**/
 
 #define VAR(type, name) DECLARE_BRANCH_VARIABLE(type, name)

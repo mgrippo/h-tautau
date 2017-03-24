@@ -40,9 +40,8 @@ void TupleProducer_tauTau::ProcessEvent(Cutter& cut)
         triggerTools.SetTriggerMatchBits(triggerDescriptors, selection.triggerResults, selected_higgs,
                                          cuts::H_tautau_2016::DeltaR_triggerMatch, true);
         
+        const auto L1tauMatches = triggerTools.MatchL1Particles(selected_higgs,selection.triggerResults);
         
-        const auto L1tauMatches = triggerTools.PrintL1Particles(selected_higgs);
-        std::cout << " l1tau matches size: " << L1tauMatches.size() << std::endl;
     }
     
     std::cout << "Trigger Match done " <<  std::endl;
@@ -115,6 +114,43 @@ void TupleProducer_tauTau::FillEventTuple(const SelectionResults& selection)
 
     FillTauLeg(1, selection.higgs->GetFirstDaughter(), store_tauIds_1);
     FillTauLeg(2, selection.higgs->GetSecondDaughter(), store_tauIds_2);
+    
+    using TriggerObjectSet = std::set<const pat::TriggerObjectStandAlone*>;
+    if (applyTriggerMatch){
+        
+        //for (unsigned n = 0; n < selection.triggerResults.GetL1TriggerMatchObjects().size(); ++n){}
+            //std::cout << " l1tau matches size: " << l1tauMatch.size() << std::endl;
+        const std::set<const l1t::Tau*> l1tauMatches_1 = selection.triggerResults.GetL1TriggerMatchObjects().at(0);
+        const std::set<const l1t::Tau*> l1tauMatches_2 = selection.triggerResults.GetL1TriggerMatchObjects().at(1);
+        if (l1tauMatches_1.size() != 0 && l1tauMatches_2.size() != 0){
+            for (const auto& tau1 : l1tauMatches_1){
+                eventTuple().l1_match_p4_1.push_back(ntuple::LorentzVectorE(tau1->p4()));
+                eventTuple().l1_hwIso_1.push_back(tau1->hwIso());
+            }
+        
+            for (const auto& tau2 : l1tauMatches_2){
+                eventTuple().l1_match_p4_2.push_back(ntuple::LorentzVectorE(tau2->p4()));
+                eventTuple().l1_hwIso_2.push_back(tau2->hwIso());
+            }
+        }
+
+        std::cout << "Set TriggerMatchObject - matches size: " << selection.triggerResults.GetTriggerMatchObjects().size() << std::endl;
+        for (const auto match : selection.triggerResults.GetTriggerMatchObjects()){
+            std::cout << "Match: " << match.first << ", " << match.second.size() << std::endl;
+            std::map<size_t, TriggerObjectSet> matches = match.second;
+            std::cout << "Match_obj 1: " << matches.at(1).size() << std::endl;
+            std::cout << "Match_obj 2: " << matches.at(2).size() << std::endl;
+            if (matches.at(1).size() != 0 && matches.at(2).size() != 0){
+                for (const auto& hlt_tau1 : matches.at(1)){
+                    eventTuple().hlt_match_p4_1.push_back(ntuple::LorentzVectorE(hlt_tau1->p4()));
+                }
+                
+                for (const auto& hlt_tau2 : matches.at(2)){
+                    eventTuple().hlt_match_p4_2.push_back(ntuple::LorentzVectorE(hlt_tau2->p4()));
+                }
+            }
+        }
+    }
 
     eventTuple.Fill();
 }
