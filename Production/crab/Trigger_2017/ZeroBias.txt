@@ -1,0 +1,9 @@
+EventAwareLumiBased ../json/Cert_271036-284044_13TeV_PromptReco_Collisions16_JSON.txt
+anaChannels=tauTau applyTriggerMatch=True sampleType=Run2016 ReRunJEC=False globalTag=80X_dataRun2_Prompt_v16 energyScales=Central productionMode=h_tt_sm saveGenTopInfo=False saveGenBosonInfo=False saveGenJetInfo=False
+
+ZeroBias_H_1	20	/ZeroBias/manzoni-doubleTauTriggerOpenPt-0c7d455ec1626c5532f7c10dc4b56cb9/USER
+ZeroBias_H_2	20	/ZeroBias/manzoni-doubleTauTriggerOpenPt-5225e25dd2240d14d91f73eed7187287/USER
+ZeroBias_H_3	20	/ZeroBias/manzoni-doubleTauTriggerOpenPt-8405dd18c43251f8779b090fc3812671/USER
+ZeroBias_H_4	20	/ZeroBias/manzoni-doubleTauTriggerOpenPt-9fdefbc0ba1433f77bcf1921dd123f05/USER
+ZeroBias_H_5	20	/ZeroBias/manzoni-doubleTauTriggerOpenPt-c061be8057a40ecb0cdd220f4a61fa03/USER
+ZeroBias_H_6	20	/ZeroBias/manzoni-doubleTauTriggerOpenPt-d71413cbc64bf2a9bd61750c97cc8e24/USER

@@ -1,0 +1,4 @@
+EventAwareLumiBased
+anaChannels=tauTau applyTriggerMatch=True sampleType=Spring16MC ReRunJEC=False globalTag=80X_mcRun2_asymptotic_2016_TrancheIV_v6 runSVfit=False runKinFit=False energyScales=Central productionMode=h_tt_sm
+
+VBFHToTauTau_M125_13TeV         30	/VBFHToTauTau_M125_13TeV_powheg_pythia8/manzoni-doubleTauTriggerOpenPt-f0f95fcb48a134c1be232a337d74828f/USER

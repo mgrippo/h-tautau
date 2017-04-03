@@ -36,6 +36,9 @@ inline constexpr Channel IdentifyChannel<MuonCandidate, TauCandidate>() { return
 
 template<>
 inline constexpr Channel IdentifyChannel<TauCandidate, TauCandidate>() { return Channel::TauTau; }
+    
+template<>
+inline constexpr Channel IdentifyChannel<TauCandidate, TauCandidate>() { return Channel::TauTau_ZB; }
 
 template<>
 inline constexpr Channel IdentifyChannel<MuonCandidate, MuonCandidate>() { return Channel::MuMu; }
@@ -54,6 +57,9 @@ template<> struct ChannelLegInfo<static_cast<int>(Channel::MuTau)> {
     using FirstLeg = MuonCandidate; using SecondLeg = TauCandidate;
 };
 template<> struct ChannelLegInfo<static_cast<int>(Channel::TauTau)> {
+    using FirstLeg = TauCandidate; using SecondLeg = TauCandidate;
+};
+template<> struct ChannelLegInfo<static_cast<int>(Channel::TauTau_ZB)> {
     using FirstLeg = TauCandidate; using SecondLeg = TauCandidate;
 };
 template<> struct ChannelLegInfo<static_cast<int>(Channel::MuMu)> {

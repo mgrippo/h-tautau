@@ -38,6 +38,7 @@ class Job:
         config.General.requestName = self.requestName
         config.Data.inputDataset = self.inputDataset
         config.Data.unitsPerJob = self.unitsPerJob
+        print "ciao"
         submit(config, dryrunBool)
 
 class JobCollection:
@@ -93,5 +94,8 @@ class JobCollection:
         config.JobType.pyCfgParams = self.pyCfgParams
         config.Data.lumiMask = self.lumiMask
         for job in self.jobs:
+            print "ciao ciao"
+            print len(self.jobNames)
+            print job.requestName
             if len(self.jobNames) == 0 or job.requestName in self.jobNames:
                 job.submit(config, dryrunBool)

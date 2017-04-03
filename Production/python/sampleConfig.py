@@ -156,7 +156,9 @@ hltPaths_tauTau_Run2016 = cms.VPSet(
              #filters1 = cms.untracked.vstring("hltDoublePFTau40TrackPt1MediumIsolationDz02Reg"),
              #filters2 = cms.untracked.vstring("hltDoublePFTau40TrackPt1MediumIsolationDz02Reg") ),
     cms.PSet( pattern = cms.string("HLT_DoubleMediumCombinedIsoPFTau35_Trk1_eta2p1_Reg_v"),
-              nLegs = cms.untracked.uint32(2)),
+              nLegs = cms.untracked.uint32(2),
+              filters1 = cms.untracked.vstring("hltDoublePFTau35TrackPt1MediumCombinedIsolationDz02Reg"),
+              filters2 = cms.untracked.vstring("hltDoublePFTau35TrackPt1MediumCombinedIsolationDz02Reg") ),
                                     #cms.PSet( pattern = cms.string("HLT_DoubleMediumCombinedIsoPFTau40_Trk1_eta2p1_Reg_v"),
                                     #nLegs = cms.untracked.uint32(2)),
                                     #cms.PSet( pattern = cms.string("HLT_DoubleMediumCombinedIsoPFTau40_Trk1_eta2p1_v"),
@@ -165,6 +167,17 @@ hltPaths_tauTau_Run2016 = cms.VPSet(
 
 hltPaths_tauTau = {
     'Run2016'   : hltPaths_tauTau_Run2016
+}
+
+hltPaths_tauTau_ZB_Run2016 = cms.VPSet(
+    cms.PSet( pattern = cms.string("HLT_DoubleMediumCombinedIsoPFTau35_Trk1_eta2p1_Reg_v"),
+              nLegs = cms.untracked.uint32(2),
+              filters1 = cms.untracked.vstring("hltDoublePFTau35TrackPt1MediumCombinedIsolationDz02Reg"),
+              filters2 = cms.untracked.vstring("hltDoublePFTau35TrackPt1MediumCombinedIsolationDz02Reg") )
+)
+
+hltPaths_tauTau_ZB = {
+    'Run2016'   : hltPaths_tauTau_ZB_Run2016
 }
 
 hltPaths_muMu_Run2016 = cms.VPSet(
@@ -177,7 +190,7 @@ hltPaths_muMu = {
     'Run2016'   : hltPaths_muMu_Run2016
 }
 
-hltPaths = { 'eTau' : hltPaths_eTau, 'muTau' : hltPaths_muTau, 'tauTau' : hltPaths_tauTau, 'muMu' : hltPaths_muMu }
+hltPaths = { 'eTau' : hltPaths_eTau, 'muTau' : hltPaths_muTau, 'tauTau' : hltPaths_tauTau, 'muMu' : hltPaths_muMu, 'tauTau_ZB' : hltPaths_tauTau_ZB }
 for channelName in hltPaths:
     hltPaths[channelName]['Spring16MC'] = hltPaths[channelName]['Run2016']
 
@@ -190,6 +203,6 @@ def IsData(sampleType):
 
 def GetHltPaths(channelName, sampleType):
     if not channelName in hltPaths or not sampleType in hltPaths[channelName]:
-        print "ERROR: no HLT paths found for sample type '{}' for channel '{}'.".format(sampleType, channel)
+        print "ERROR: no HLT paths found for sample type '{}' for channel '{}'.".format(sampleType, channelName)
         sys.exit(1)
     return hltPaths[channelName][sampleType]

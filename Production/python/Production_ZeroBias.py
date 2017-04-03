@@ -176,7 +176,7 @@ process.summaryTupleProducer = cms.EDAnalyzer('SummaryProducer',
 process.tupleProductionSequence = cms.Sequence(process.summaryTupleProducer)
 
 if options.anaChannels == 'all':
-    channels = [ 'eTau', 'muTau', 'tauTau', 'muMu', 'tauTau_ZB' ]
+    channels = [ 'eTau', 'muTau', 'tauTau', 'muMu' ]
 else:
     channels = re.split(',', options.anaChannels)
 

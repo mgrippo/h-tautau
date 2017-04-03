@@ -18,7 +18,7 @@ parser.add_argument('--output', required=True, dest='output', type=str,
                     help="output path after /store/user/USERNAME")
 parser.add_argument('--blacklist', required=False, dest='blacklist', type=str, default="",
 					help="list of sites where the jobs shouldn't run")
-parser.add_argument('--jobNames', required=False, dest='jobNames', type=str, default="",
+parser.add_argument('--jobNames', required=False, dest='jobNames', type=str, default=None,
 					help="list of job names to submit (if not specified - submit all)")
 parser.add_argument('--lumiMask', required=False, dest='lumiMask', type=str, default="",
 					help="json file with a lumi mask (default: apply lumi mask from the config file)")
@@ -29,7 +29,7 @@ parser.add_argument('--unitsPerJob', required=False, dest='unitsPerJob', type=in
 parser.add_argument('job_file', type=str, nargs='+', help="text file with jobs descriptions")
 args = parser.parse_args()
 
-from CRABClient.UserUtilities import config, ClientException, getUsernameFromSiteDB
+from CRABClient.UserUtilities import config, ClientException
 from CRABAPI.RawCommand import crabCommand
 from httplib import HTTPException
 
@@ -46,12 +46,14 @@ config.General.transferLogs = True
 config.Data.publication = False
 
 config.Site.storageSite = args.site
-config.Data.outLFNDirBase = "/store/user/{}/{}".format(getUsernameFromSiteDB(), args.output)
+config.Data.outLFNDirBase = "/store/group/phys_tau/{}/{}".format("mgrippo", args.output)
 
 if len(args.blacklist) != 0:
 	config.Site.blacklist = re.split(',', args.blacklist)
 
-job_names = Set(re.split(',', args.jobNames))
+job_names = Set()
+if args.jobNames != None:
+    job_names = Set(re.split(',', args.jobNames))
 
 from crab_tools import JobCollection
 for job_file in args.job_file:

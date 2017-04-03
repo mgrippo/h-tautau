@@ -8,13 +8,13 @@ This file is part of https://github.com/hh-italian-group/h-tautau. */
 
 namespace analysis {
 
-enum class Channel { ETau = 0, MuTau = 1, TauTau = 2, MuMu = 3 };
+enum class Channel { ETau = 0, MuTau = 1, TauTau = 2, MuMu = 3, TauTau_ZB = 4 };
 ENUM_NAMES(Channel) = {
-    { Channel::ETau, "eTau" }, { Channel::MuTau, "muTau" }, { Channel::TauTau, "tauTau" }, { Channel::MuMu, "muMu" }
+    { Channel::ETau, "eTau" }, { Channel::MuTau, "muTau" }, { Channel::TauTau, "tauTau" }, { Channel::MuMu, "muMu" }, { Channel::TauTau_ZB, "tauTau_ZB" }
 };
 const EnumNameMap<Channel> __Channel_names_latex("ChannelLatex", {
     { Channel::ETau, "e#tau_{h}" }, { Channel::MuTau, "#mu#tau_{h}" }, { Channel::TauTau, "#tau_{h}#tau_{h}" },
-    { Channel::MuMu, "#mu#mu" }
+    { Channel::MuMu, "#mu#mu" }, { Channel::TauTau_ZB, "#tau_{h}#tau_{h}_{ZB}" }
 });
 
 enum class EventEnergyScale { Central = 0, TauUp = 1, TauDown = 2, JetUp = 3, JetDown = 4 };

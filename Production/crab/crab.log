@@ -1,0 +1,49 @@
+DEBUG 2017-03-31 16:13:12,567: 	 Executing command: 'status'
+DEBUG 2017-03-31 16:13:12,567: 	 Found CRAB cache file /afs/cern.ch/user/m/mgrippo/.crab3
+DEBUG 2017-03-31 16:13:12,577: 	 Checking credentials
+DEBUG 2017-03-31 16:13:12,578: 	 Found proxy file /tmp/x509up_u9475
+DEBUG 2017-03-31 16:13:12,578: 	 Getting proxy life time left
+DEBUG 2017-03-31 16:13:14,147: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u9475 -timeleft
+ output : 86330
+
+ error: 
+ retcode : 0
+DEBUG 2017-03-31 16:13:15,381: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u9475 -actimeleft
+ output : 86328
+
+ error: 
+ retcode : 0
+DEBUG 2017-03-31 16:13:15,381: 	 Proxy valid for 23:58:50 hours
+ERROR 2017-03-31 16:13:15,382: 	 Cannot find .requestcache file in CRAB project directory /afs/cern.ch/work/m/mgrippo/TauTrigger_2017_prod/CMSSW_8_0_25/src/h-tautau/Production/crab/work_area
+ERROR 2017-03-31 16:13:15,382: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1703/bin/crab", line 160, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1703/bin/crab", line 146, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1703/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 321, in __init__
+    self.loadLocalCache(proxyOptsSetPlace)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1703/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 450, in loadLocalCache
+    raise ex
+CachefileNotFoundException: Cannot find .requestcache file in CRAB project directory /afs/cern.ch/work/m/mgrippo/TauTrigger_2017_prod/CMSSW_8_0_25/src/h-tautau/Production/crab/work_area
+DEBUG 2017-03-31 16:36:40,545: 	 Executing command: 'submit'
+DEBUG 2017-03-31 16:36:40,583: 	 Found CRAB cache file /afs/cern.ch/user/m/mgrippo/.crab3
+DEBUG 2017-03-31 16:36:40,623: 	 Checking credentials
+DEBUG 2017-03-31 16:36:40,623: 	 Found proxy file /tmp/x509up_u9475
+DEBUG 2017-03-31 16:36:40,623: 	 Getting proxy life time left
+DEBUG 2017-03-31 16:36:42,278: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u9475 -timeleft
+ output : 84922
+
+ error: 
+ retcode : 0
+DEBUG 2017-03-31 16:36:43,497: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u9475 -actimeleft
+ output : 84920
+
+ error: 
+ retcode : 0
+DEBUG 2017-03-31 16:36:43,497: 	 Proxy valid for 23:35:22 hours
+DEBUG 2017-03-31 16:36:43,498: 	 Will use CRAB Analysis plugin (i.e. will run an analysis job type).
