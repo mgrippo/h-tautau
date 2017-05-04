@@ -107,6 +107,34 @@ public:
         results.SetL1Matches(vector_matches);
         return vector_matches;
     }
+    
+    //for data
+    L1ParticlePtrSetVector MatchL1Particles_data(const LorentzVector& firstCandidateMomentum,
+                                                 const LorentzVector& secondCandidateMomentum)
+    {
+        const BXVector<l1t::Tau>& l1taus = *l1JetParticles.product();
+        L1ParticlePtrSetVector vector_matches;
+        L1ParticlePtrSet matches_1, matches_2;
+        const double deltaR2 = std::pow(0.5, 2);
+        
+        std::cout << " l1JetParticle size: " << l1taus.size(0) << std::endl;
+        for (unsigned n = 0; n < l1taus.size(0); ++n){
+            //std::cout << "n" << n << " - l1JetParticle elem: " << l1taus.at(0,n) << std::endl;
+            const l1t::Tau& l1tau = l1taus.at(0,n);
+            std::cout << "n" << n << " - l1tau pt: " << l1tau.pt() << std::endl;
+            
+            if(ROOT::Math::VectorUtil::DeltaR2(l1tau.p4(), firstCandidateMomentum) < deltaR2)
+                matches_1.insert(&l1tau);
+            else if(ROOT::Math::VectorUtil::DeltaR2(l1tau.p4(), secondCandidateMomentum) < deltaR2)
+                matches_2.insert(&l1tau);
+            else
+                continue;
+        }
+        vector_matches.push_back(matches_1);
+        vector_matches.push_back(matches_2);
+        return vector_matches;
+    }
+    //for data
 
     void SetTriggerAcceptBits(const analysis::TriggerDescriptors& descriptors, analysis::TriggerResults& results);
 
@@ -157,6 +185,51 @@ public:
             std::cout << "Set results " <<  std::endl;
         }
     }
+    
+    //for data - FIXME
+    TriggerObjectSet FindMatchingTriggerObjects_data(const analysis::TriggerDescriptors& descriptors, size_t path_index,
+                                                const std::set<trigger::TriggerObjectType>& objectTypes,size_t leg_id);
+    
+    TriggerObjectSet FindMatchingTriggerObjects_data(const analysis::TriggerDescriptors& descriptors, size_t path_index,
+                                                     size_t leg_id)
+    {
+        static const std::set<trigger::TriggerObjectType> types = { trigger::TriggerTau };
+        return FindMatchingTriggerObjects_data(descriptors, path_index, types, leg_id);
+    }
+    
+    void SetTriggerMatchBits_data(const analysis::TriggerDescriptors& descriptors, analysis::TriggerResults& results,
+                                  bool can_flip = false)
+    {
+        std::cout << "descriptors size: " <<  descriptors.size() << std::endl;
+        for(size_t n = 0; n < descriptors.size(); ++n) {
+            const size_t n_legs = descriptors.GetNumberOfLegs(n);
+            if(n_legs > 2 || n_legs == 0)
+                throw exception("Unsupported number of legs = %1%.") % n_legs;
+            bool match_found = false;
+            const size_t max_flip = can_flip ? 2 : 1;
+            std::map<size_t, TriggerObjectSet> matches;
+            for(size_t flip = 0; !match_found && flip < max_flip; ++flip) {
+                matches.clear();
+                const size_t first = (flip % 2) + 1, second = ((flip + 1) % 2) + 1;
+                matches[first] = FindMatchingTriggerObjects_data(descriptors, n, first);
+                std::cout << "Found first trigger match " <<  std::endl;
+                matches[second] = FindMatchingTriggerObjects_data(descriptors, n, second);
+                
+                std::cout << "Found second trigger match " <<  std::endl;
+                std::vector<const pat::TriggerObjectStandAlone*> comb_match;
+                std::set_union(matches[1].begin(), matches[1].end(), matches[2].begin(), matches[2].end(),
+                               std::back_inserter(comb_match));
+                
+                match_found = matches[1].size() >= 1 && matches[2].size() >= n_legs - 1 && comb_match.size() >= n_legs;
+                std::cout << "Found match " <<  std::endl;
+            }
+            results.SetMatch(n, match_found);
+            results.SetTriggerMatchObject(n, matches);
+            
+            std::cout << "Set results " <<  std::endl;
+        }
+    }
+    //for data
     
 
     bool TryGetTriggerResult(CMSSW_Process process, const std::string& name, bool& result) const;

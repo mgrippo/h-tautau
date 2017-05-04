@@ -26,6 +26,7 @@ private:
 
     std::vector<TauCandidate> CollectSignalTaus();
     void SelectSignalTau(const TauCandidate& tau, Cutter& cut) const;
+    static bool PtComparator(double pt_1, double pt_2);
 
 private:
     SelectionResultsPtr previous_selection;

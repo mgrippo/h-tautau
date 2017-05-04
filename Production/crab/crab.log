@@ -47,3 +47,34 @@ DEBUG 2017-03-31 16:36:43,497: 	 Executing :
  retcode : 0
 DEBUG 2017-03-31 16:36:43,497: 	 Proxy valid for 23:35:22 hours
 DEBUG 2017-03-31 16:36:43,498: 	 Will use CRAB Analysis plugin (i.e. will run an analysis job type).
+DEBUG 2017-04-03 15:22:09,480: 	 Executing command: 'submit'
+DEBUG 2017-04-03 15:22:09,511: 	 Found CRAB cache file /afs/cern.ch/user/m/mgrippo/.crab3
+DEBUG 2017-04-03 15:22:09,536: 	 Checking credentials
+DEBUG 2017-04-03 15:22:09,537: 	 Proxy file /tmp/x509up_u9475 not found
+DEBUG 2017-04-03 15:22:09,537: 	 Creating new proxy for 24:00 hours with VO group '' and VO role 'NULL'.
+DEBUG 2017-04-03 15:22:19,013: 	 Executing : 
+ command : voms-proxy-init -voms cms:/cms -valid 24:00 -rfc
+ output : None
+ error: None
+ retcode : 0
+DEBUG 2017-04-03 15:22:20,033: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u9475 -timeleft
+ output : 86398
+
+ error: 
+ retcode : 0
+DEBUG 2017-04-03 15:22:20,839: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u9475 -actimeleft
+ output : 86397
+
+ error: 
+ retcode : 0
+DEBUG 2017-04-03 15:22:21,569: 	 Executing : 
+ command : env X509_USER_PROXY=/tmp/x509up_u9475 voms-proxy-info -fqan
+ output : /cms/Role=NULL/Capability=NULL
+/cms/itcms/Role=NULL/Capability=NULL
+
+ error: 
+ retcode : 0
+DEBUG 2017-04-03 15:22:21,570: 	 Proxy created.
+DEBUG 2017-04-03 15:22:21,570: 	 Will use CRAB Analysis plugin (i.e. will run an analysis job type).

@@ -101,6 +101,47 @@ TriggerTools::TriggerObjectSet TriggerTools::FindMatchingTriggerObjects(
 
     return matches;
 }
+    
+    //for data - FIXME
+    TriggerTools::TriggerObjectSet TriggerTools::FindMatchingTriggerObjects_data(
+            const TriggerDescriptors& descriptors, size_t path_index,
+            const std::set<trigger::TriggerObjectType>& objectTypes,size_t leg_id)
+    {
+        const auto hasExpectedType = [&](const pat::TriggerObjectStandAlone& triggerObject) {
+            for(auto type : objectTypes)
+                if(triggerObject.type(type)) return true;
+            return false;
+        };
+        
+        const auto& filters = descriptors.GetFilters(path_index, leg_id);
+        const auto passFilters = [&](const pat::TriggerObjectStandAlone& triggerObject) {
+            for(const auto& filter : filters)
+                if(!triggerObject.hasFilterLabel(filter)) return false;
+            return true;
+        };
+        
+        TriggerObjectSet matches;
+        const auto& triggerResultsHLT = triggerResultsMap.at(CMSSW_Process::TEST);
+        const edm::TriggerNames& triggerNames = iEvent->triggerNames(*triggerResultsHLT);
+    
+        for (const pat::TriggerObjectStandAlone& triggerObject : *triggerObjects) {
+            if(!hasExpectedType(triggerObject)) continue;
+            pat::TriggerObjectStandAlone unpackedTriggerObject(triggerObject);
+            unpackedTriggerObject.unpackPathNames(triggerNames);
+            if(!passFilters(unpackedTriggerObject)) continue;
+            const auto& paths = unpackedTriggerObject.pathNames(true, true);
+            for(const auto& path : paths) {
+                if(descriptors.PatternMatch(path, path_index)) {
+                    matches.insert(&triggerObject);
+                    break;
+                }
+            }
+        }
+        
+        return matches;
+    }
+    
+    //for data
 
 bool TriggerTools::TryGetTriggerResult(CMSSW_Process process, const std::string& name, bool& result) const
 {
