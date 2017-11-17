@@ -123,6 +123,9 @@ public:
             const l1t::Tau& l1tau = l1taus.at(0,n);
             std::cout << "n" << n << " - l1tau pt: " << l1tau.pt() << std::endl;
             
+            std::cout << "DR l1 - first tau" << ROOT::Math::VectorUtil::DeltaR2(l1tau.p4(), firstCandidateMomentum) << std::endl;
+            std::cout << "DR l1 - second tau" << ROOT::Math::VectorUtil::DeltaR2(l1tau.p4(), secondCandidateMomentum) << std::endl;
+            
             if(ROOT::Math::VectorUtil::DeltaR2(l1tau.p4(), firstCandidateMomentum) < deltaR2)
                 matches_1.insert(&l1tau);
             else if(ROOT::Math::VectorUtil::DeltaR2(l1tau.p4(), secondCandidateMomentum) < deltaR2)

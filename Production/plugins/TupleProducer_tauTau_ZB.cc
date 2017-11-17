@@ -81,6 +81,7 @@ void TupleProducer_tauTau_ZB::FillEventTuple(const SelectionResults& selection)
                 
                 for (const auto& hlt_tau1 : matches.at(1)){
                     if (hlt_matches_pt_1.at(0) == hlt_tau1->pt()){
+                        std::cout << "hlt_matches_pt_1: " << hlt_matches_pt_1.at(0) << ", hlt_tau1_pt(): " << hlt_tau1->pt() << std::endl;
                         std::cout << "Found 1" << std::endl;
                         eventTuple().hlt_match_p4_1.push_back(ntuple::LorentzVectorE(hlt_tau1->p4()));
                         hlt_tau1_momentum = hlt_tau1->p4();
@@ -88,7 +89,8 @@ void TupleProducer_tauTau_ZB::FillEventTuple(const SelectionResults& selection)
                 }
                 
                 for (const auto& hlt_tau2 : matches.at(2)){
-                    if (hlt_matches_pt_2.at(0) == hlt_tau2->pt()){
+                    if (hlt_matches_pt_2.at(1) == hlt_tau2->pt()){
+                        std::cout << "hlt_matches_pt_2: " << hlt_matches_pt_2.at(1) << ", hlt_tau2_pt(): " << hlt_tau2->pt() << std::endl;
                         std::cout << "Found 2" << std::endl;
                         eventTuple().hlt_match_p4_2.push_back(ntuple::LorentzVectorE(hlt_tau2->p4()));
                         hlt_tau2_momentum = hlt_tau2->p4();
@@ -102,7 +104,7 @@ void TupleProducer_tauTau_ZB::FillEventTuple(const SelectionResults& selection)
         const std::set<const l1t::Tau*> l1tauMatches_1 = L1tauMatches.at(0);
         const std::set<const l1t::Tau*> l1tauMatches_2 = L1tauMatches.at(1);
         std::cout << "l1tauMatches_1: " << l1tauMatches_1.size() << ", l1tauMatches_2: " << l1tauMatches_2.size() << std::endl;
-        if (l1tauMatches_1.size() != 0 || l1tauMatches_2.size() != 0){
+        if (l1tauMatches_1.size() != 0 && l1tauMatches_2.size() != 0){
             for (const auto& tau1 : l1tauMatches_1){
                 std::cout << "Found 1 l1" << std::endl;
                 eventTuple().l1_match_p4_1.push_back(ntuple::LorentzVectorE(tau1->p4()));

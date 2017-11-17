@@ -12,7 +12,7 @@ parser = argparse.ArgumentParser(description='Submit jobs on CRAB.',
 parser.add_argument('--work-area', required=False, dest='workArea', type=str, default="work_area",
                     help="Work area")
 parser.add_argument('--cfg', required=True, dest='cfg', type=str, help="CMSSW configuration file")
-parser.add_argument('--x                                       ', required=True, dest='inputDBS', type=str, help="inputDBS", default="global")
+parser.add_argument('--inputDBS', required=True, dest='inputDBS', type=str, help="inputDBS", default="global")
 parser.add_argument('--site', required=True, dest='site', type=str, help="Site for stage out.")
 parser.add_argument('--dryrun', action="store_true", help="Submission dryrun.")
 parser.add_argument('--output', required=True, dest='output', type=str,
