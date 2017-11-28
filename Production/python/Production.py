@@ -98,17 +98,29 @@ if options.ReRunJEC:
         payload = 'AK4PFchs' # Make sure to choose the appropriate levels and payload here!
     )
     if isData:
-      process.patJetCorrFactorsReapplyJEC.levels.append('L2L3Residual')
+        process.patJetCorrFactorsReapplyJEC.levels.append('L2L3Residual')
 
     from PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff import updatedPatJets
     process.patJetsReapplyJEC = updatedPatJets.clone(
-        jetSource = cms.InputTag('slimmedJets'),
-        jetCorrFactorsSource = cms.VInputTag(cms.InputTag('patJetCorrFactorsReapplyJEC'))
-    )
+                                                     jetSource = cms.InputTag('slimmedJets'),
+                                                     jetCorrFactorsSource = cms.VInputTag(cms.InputTag('patJetCorrFactorsReapplyJEC'))
+                                                     )
 
     process.JECsequence = cms.Sequence(process.patJetCorrFactorsReapplyJEC * process.patJetsReapplyJEC)
 
+#    from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
+#
+#    updateJetCollection(
+#        process,
+#        jetSource = cms.InputTag('slimmedJets'),
+#        labelName = 'UpdatedJEC',
+#        jetCorrections = ('AK4PFchs', cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute']), 'None')  # Do not forget 'L2L3Residual' on data!
+#    )
+#    
+#    process.JECsequence = cms.Sequence(process.patJetCorrFactorsUpdatedJEC * process.updatedPatJetsUpdatedJEC)
+
     JetsInputTag = cms.InputTag('patJetsReapplyJEC', '', processName)
+#    JetsInputTag = cms.InputTag('updatedPatJetsUpdatedJEC', '', processName)
     MetInputTag = cms.InputTag('slimmedMETs', '', processName)
 
     from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD

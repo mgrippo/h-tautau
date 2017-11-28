@@ -155,10 +155,10 @@ hltPaths_tauTau_Run2016 = cms.VPSet(
     #nLegs = cms.untracked.uint32(2),
              #filters1 = cms.untracked.vstring("hltDoublePFTau40TrackPt1MediumIsolationDz02Reg"),
              #filters2 = cms.untracked.vstring("hltDoublePFTau40TrackPt1MediumIsolationDz02Reg") ),
-    cms.PSet( pattern = cms.string("HLT_DoubleMediumCombinedIsoPFTau35_Trk1_eta2p1_Reg_v"),
+    cms.PSet( pattern = cms.string("HLT_DoubleMediumChargedIsoPFTau35_Trk1_eta2p1_Reg_v"),
               nLegs = cms.untracked.uint32(2),
-              filters1 = cms.untracked.vstring("hltDoublePFTau35TrackPt1MediumCombinedIsolationDz02Reg"),
-              filters2 = cms.untracked.vstring("hltDoublePFTau35TrackPt1MediumCombinedIsolationDz02Reg") ),
+              filters1 = cms.untracked.vstring("hltDoublePFTau35TrackPt1MediumChargedIsolationDz02Reg"),
+              filters2 = cms.untracked.vstring("hltDoublePFTau35TrackPt1MediumChargedIsolationDz02Reg") ),
                                     #cms.PSet( pattern = cms.string("HLT_DoubleMediumCombinedIsoPFTau40_Trk1_eta2p1_Reg_v"),
                                     #nLegs = cms.untracked.uint32(2)),
                                     #cms.PSet( pattern = cms.string("HLT_DoubleMediumCombinedIsoPFTau40_Trk1_eta2p1_v"),
@@ -170,10 +170,10 @@ hltPaths_tauTau = {
 }
 
 hltPaths_tauTau_ZB_Run2016 = cms.VPSet(
-    cms.PSet( pattern = cms.string("HLT_DoubleMediumCombinedIsoPFTau35_Trk1_eta2p1_Reg_v"),
+    cms.PSet( pattern = cms.string("HLT_DoubleMediumChargedIsoPFTau35_Trk1_eta2p1_Reg_v"),
               nLegs = cms.untracked.uint32(2),
-              filters1 = cms.untracked.vstring("hltDoublePFTau35TrackPt1MediumCombinedIsolationDz02Reg"),
-              filters2 = cms.untracked.vstring("hltDoublePFTau35TrackPt1MediumCombinedIsolationDz02Reg") )
+              filters1 = cms.untracked.vstring("hltDoublePFTau35TrackPt1MediumChargedIsolationDz02Reg"),
+              filters2 = cms.untracked.vstring("hltDoublePFTau35TrackPt1MediumChargedIsolationDz02Reg") )
 )
 
 hltPaths_tauTau_ZB = {

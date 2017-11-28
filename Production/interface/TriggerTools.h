@@ -89,11 +89,11 @@ public:
         const auto& secondCandidateMomentum = candidate.GetSecondDaughter().GetMomentum();
         const double deltaR2 = std::pow(0.5, 2);
         
-        std::cout << " l1JetParticle size: " << l1taus.size(0) << std::endl;
+        //std::cout << " l1JetParticle size: " << l1taus.size(0) << std::endl;
         for (unsigned n = 0; n < l1taus.size(0); ++n){
             //std::cout << "n" << n << " - l1JetParticle elem: " << l1taus.at(0,n) << std::endl;
             const l1t::Tau& l1tau = l1taus.at(0,n);
-            std::cout << "n" << n << " - l1tau pt: " << l1tau.pt() << std::endl;
+            //std::cout << "n" << n << " - l1tau pt: " << l1tau.pt() << std::endl;
             
             if(ROOT::Math::VectorUtil::DeltaR2(l1tau.p4(), firstCandidateMomentum) < deltaR2)
                 matches_1.insert(&l1tau);
@@ -117,14 +117,14 @@ public:
         L1ParticlePtrSet matches_1, matches_2;
         const double deltaR2 = std::pow(0.5, 2);
         
-        std::cout << " l1JetParticle size: " << l1taus.size(0) << std::endl;
+        //std::cout << " l1JetParticle size: " << l1taus.size(0) << std::endl;
         for (unsigned n = 0; n < l1taus.size(0); ++n){
             //std::cout << "n" << n << " - l1JetParticle elem: " << l1taus.at(0,n) << std::endl;
             const l1t::Tau& l1tau = l1taus.at(0,n);
-            std::cout << "n" << n << " - l1tau pt: " << l1tau.pt() << std::endl;
+            //std::cout << "n" << n << " - l1tau pt: " << l1tau.pt() << std::endl;
             
-            std::cout << "DR l1 - first tau" << ROOT::Math::VectorUtil::DeltaR2(l1tau.p4(), firstCandidateMomentum) << std::endl;
-            std::cout << "DR l1 - second tau" << ROOT::Math::VectorUtil::DeltaR2(l1tau.p4(), secondCandidateMomentum) << std::endl;
+            //std::cout << "DR l1 - first tau" << ROOT::Math::VectorUtil::DeltaR2(l1tau.p4(), firstCandidateMomentum) << std::endl;
+            //std::cout << "DR l1 - second tau" << ROOT::Math::VectorUtil::DeltaR2(l1tau.p4(), secondCandidateMomentum) << std::endl;
             
             if(ROOT::Math::VectorUtil::DeltaR2(l1tau.p4(), firstCandidateMomentum) < deltaR2)
                 matches_1.insert(&l1tau);
@@ -157,7 +157,7 @@ public:
     void SetTriggerMatchBits(const analysis::TriggerDescriptors& descriptors, analysis::TriggerResults& results,
                              const HiggsCandidate& candidate, double deltaR_Limit, bool can_flip = false)
     {
-        std::cout << "descriptors size: " <<  descriptors.size() << std::endl;
+        //std::cout << "descriptors size: " <<  descriptors.size() << std::endl;
         for(size_t n = 0; n < descriptors.size(); ++n) {
             const size_t n_legs = descriptors.GetNumberOfLegs(n);
             if(n_legs > 2 || n_legs == 0)
@@ -170,22 +170,22 @@ public:
                 const size_t first = (flip % 2) + 1, second = ((flip + 1) % 2) + 1;
                 matches[first] = FindMatchingTriggerObjects(descriptors, n, candidate.GetFirstDaughter(), first,
                                                             deltaR_Limit);
-                std::cout << "Found first trigger match " <<  std::endl;
+                //std::cout << "Found first trigger match " <<  std::endl;
                 matches[second] = FindMatchingTriggerObjects(descriptors, n, candidate.GetSecondDaughter(), second,
                                                              deltaR_Limit);
 
-                std::cout << "Found second trigger match " <<  std::endl;
+                //std::cout << "Found second trigger match " <<  std::endl;
                 std::vector<const pat::TriggerObjectStandAlone*> comb_match;
                 std::set_union(matches[1].begin(), matches[1].end(), matches[2].begin(), matches[2].end(),
                                std::back_inserter(comb_match));
 
                 match_found = matches[1].size() >= 1 && matches[2].size() >= n_legs - 1 && comb_match.size() >= n_legs;
-                std::cout << "Found match " <<  std::endl;
+                //std::cout << "Found match " <<  std::endl;
             }
             results.SetMatch(n, match_found);
             results.SetTriggerMatchObject(n, matches);
             
-            std::cout << "Set results " <<  std::endl;
+            //std::cout << "Set results " <<  std::endl;
         }
     }
     

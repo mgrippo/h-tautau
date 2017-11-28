@@ -54,7 +54,8 @@ BaseTupleProducer::BaseTupleProducer(const edm::ParameterSet& iConfig, const std
                  mayConsume<edm::TriggerResults>(edm::InputTag("TriggerResults", "", "PAT")),
                  consumes<pat::PackedTriggerPrescales>(iConfig.getParameter<edm::InputTag>("prescales")),
                  consumes<pat::TriggerObjectStandAloneCollection>(iConfig.getParameter<edm::InputTag>("objects")),
-                 mayConsume<BXVector<l1t::Tau>>(edm::InputTag("hltCaloStage2Digis", "Tau", "TEST")))
+                 //mayConsume<BXVector<l1t::Tau>>(edm::InputTag("caloStage2Digis", "Tau", "RECO"))) //hltCaloStage2Digis
+                 mayConsume<BXVector<l1t::Tau>>(edm::InputTag("simCaloStage2Digis", "", "TEST")))
 {
     root_ext::HistogramFactory<TH1D>::LoadConfig(
             edm::FileInPath("h-tautau/Production/data/histograms.cfg").fullPath());
@@ -135,8 +136,8 @@ void BaseTupleProducer::InitializeAODCollections(const edm::Event& iEvent, const
             iEvent.getByToken(topGenEvent_token, topGenEvent);
     }
 
-    iSetup.get<JetCorrectionsRecord>().get("AK5PF", jetCorParColl);
-    jecUnc = std::shared_ptr<JetCorrectionUncertainty>(new JetCorrectionUncertainty((*jetCorParColl)["Uncertainty"]));
+//    iSetup.get<JetCorrectionsRecord>().get("AK4PFchs", jetCorParColl);
+//    jecUnc = std::shared_ptr<JetCorrectionUncertainty>(new JetCorrectionUncertainty((*jetCorParColl)["Uncertainty"]));
 }
 
 void BaseTupleProducer::InitializeCandidateCollections(analysis::EventEnergyScale energyScale)
