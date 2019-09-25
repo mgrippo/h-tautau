@@ -275,10 +275,10 @@ else:
 jetSrc_InputTag                  = cms.InputTag('selectedUpdatedPatJetsNewDFTraining')
 objects_InputTag                 = cms.InputTag('slimmedPatTrigger')
 
-if period == 'Run2016' and options.isEmbedded :
-    objects_InputTag             = cms.InputTag('selectedPatTrigger')
-
 genJets_inputTag = cms.InputTag('slimmedGenJets')
+
+if period == 'Run2016' and options.isEmbedded :
+    genJets_inputTag = cms.InputTag('slimmedGenJetsAK8SoftDropSubJets')
 
 if period == 'Run2017' and options.isEmbedded :
     genJets_inputTag = cms.InputTag('slimmedGenJetsAK8SoftDropSubJets')
